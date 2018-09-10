@@ -1,0 +1,162 @@
+﻿<html>
+<head>
+    <title>Aluguel de Livros</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css"/>
+</head>
+<body>
+    <h1>Alugueis de Livros</h1>
+    <ul class="nav nav-pills">
+        <li>@Html.ActionLink("Aluguel", "Index", "Home")</li>
+        <li>@Html.ActionLink("Cliente", "Cliente", "Home")</li>
+        <li>@Html.ActionLink("Livro", "Livro", "Home")</li>
+    </ul>
+    <form>
+        <table class="table">
+            <tr>
+                <td>Aluguel ID :</td>
+                <td>
+                    <select id="id"></select>
+                </td>
+            </tr>
+            <tr>
+                <td>Data de Retirada :</td>
+                <td><input id="dtre" type="text" /></td>
+            </tr>
+            <tr>
+                <td>Data de Entrega :</td>
+                <td><input id="dten" type="text" /></td>
+            </tr>
+            <tr>
+                <td>Status :</td>
+                <td><input id="st" type="text" /></td>
+            </tr>
+            <tr>
+                <td>Livro:</td>
+                <td><input id="lvr" type="text" /></td>
+            </tr>
+            <tr>
+                <td>Cliente :</td>
+                <td><input id="cli" type="text" /></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="button" id="incluir"
+                           value="Incluir" />
+                    <input type="button" id="atualizar"
+                           value="Atualizar" />
+                    <input type="button" id="excluir"
+                           value="Excluir" />
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div id="msg"></div>
+    </form>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var options = {};
+            options.url = "/api/aluguel";
+            options.type = "GET";
+            options.dataType = "json";
+            options.success = function (data) {
+                data.forEach(function (element) {
+                    $("#id").append("<option>"
+                        + element.codigo + "</option>");
+                });
+            };
+            options.error = function () {
+                $("#msg").html("Erro ao chamar a API!");
+            };
+            $.ajax(options);
+
+            $("#id").change(function () {
+                var options = {};
+                options.url = "/api/aluguel/" +
+                    $("#id").val() + "/aluguel";
+                options.type = "GET";
+                options.dataType = "json";
+                options.success = function (data) {
+                    $("#dtre").val(data.dataDeRetirada);
+                    $("#dten").val(data.dataDeEntrega);
+                    $("#st").val(data.status);
+                    $("#lvr").val(data.livroId);
+                    $("#cli").val(data.clienteId);
+                };
+                options.error = function () {
+                    $("#msg").html("Erro ao chamar a API!");
+                };
+                $.ajax(options);
+            });
+
+            $("#incluir").click(function () {
+                var options = {};
+                options.url = "/api/aluguel";
+                options.type = "POST";
+
+                var obj = {};
+                obj.dataDeRetirada = $("#dtre").val();
+                obj.dataDeEntrega = $("#dten").val();
+                obj.status = $("#st").val();
+                obj.livroId = $("#lvr").val();
+                obj.clienteId = $("#cli").val();
+
+                options.data = JSON.stringify(obj);
+                options.contentType = "application/json";
+                options.dataType = "html";
+
+                options.success = function (msg) {
+                    $("#msg").html(msg);
+                };
+                options.error = function () {
+                    $("#msg").html("Erro ao chamar a API!");
+                };
+                $.ajax(options);
+            });
+
+            $("#atualizar").click(function () {
+                var options = {};
+                options.url = "/api/aluguel/"
+                    + $("#id").val() + "/editaaluguel";
+                options.type = "PUT";
+
+                var obj = {};
+                obj.codigo = $("#id").val();
+                obj.dataDeRetirada = $("#dtre").val();
+                obj.dataDeEntrega = $("#dten").val();
+                obj.status = $("#st").val();
+                obj.livroId = $("#lvr").val();
+                obj.clienteId = $("#cli").val();
+
+                options.data = JSON.stringify(obj);
+                options.contentType = "application/json";
+                options.dataType = "html";
+                options.success = function (msg) {
+                    $("#msg").html(msg);
+                };
+                options.error = function () {
+                    $("#msg").html("Erro ao chamar a API!");
+                };
+                $.ajax(options);
+            });
+
+            $("#excluir").click(function () {
+                var options = {};
+                options.url = "/api/aluguel/"
+                    + $("#id").val() + "/deletaaluguel";
+                options.type = "DELETE";
+                options.dataType = "html";
+                options.success = function (msg) {
+                    $("#msg").html(msg);
+                };
+                options.error = function () {
+                    $("#msg").html("Erro ao chamar a API!");
+                };
+                $.ajax(options);
+            });
+
+        });
+
+    </script>
+</body>
+</html>
