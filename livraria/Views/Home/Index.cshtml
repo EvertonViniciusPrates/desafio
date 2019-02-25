@@ -1,7 +1,7 @@
 ﻿<html>
 <head>
     <title>Aluguel de Livros</title>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css" />
 </head>
 <body>
     <h1>Alugueis de Livros</h1>
@@ -15,7 +15,9 @@
             <tr>
                 <td>Aluguel ID :</td>
                 <td>
-                    <select id="id"></select>
+                    <select id="id">
+                        <option></option>
+                    </select>
                 </td>
             </tr>
             <tr>
@@ -32,11 +34,19 @@
             </tr>
             <tr>
                 <td>Livro:</td>
-                <td><input id="lvr" type="text" /></td>
+                <td>
+                    <select id="livroId">
+                        <option></option>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <td>Cliente :</td>
-                <td><input id="cli" type="text" /></td>
+                <td>
+                    <select id="clienteId">
+                        <option></option>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -55,14 +65,44 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script>
         $(document).ready(function () {
+            var livro = {};
+            livro.url = "/api/livro";
+            livro.type = "GET";
+            livro.dataType = "json";
+            livro.success = function (data) {
+                data.forEach(function (element) {
+                    $("#livroId").append("<option value=" + element.codigo + ">"
+                        + element.nome + "</option>");
+                });
+            };
+            livro.error = function () {
+                $("#msg").html("Erro ao chamar a API!");
+            };
+            $.ajax(livro);
+
+            var cliente = {};
+            cliente.url = "/api/cliente";
+            cliente.type = "GET";
+            cliente.dataType = "json";
+            cliente.success = function (data) {
+                data.forEach(function (element) {
+                    $("#clienteId").append("<option value=" + element.codigo + ">"
+                        + element.nome + "</option>");
+                });
+            };
+            cliente.error = function () {
+                $("#msg").html("Erro ao chamar a API!");
+            };
+            $.ajax(cliente);
+
             var options = {};
             options.url = "/api/aluguel";
             options.type = "GET";
             options.dataType = "json";
             options.success = function (data) {
                 data.forEach(function (element) {
-                    $("#id").append("<option>"
-                        + element.codigo + "</option>");
+                    $("#id").append("<option value=" + element.codigo + ">"
+                        + element.livro.descricao + "</option>");
                 });
             };
             options.error = function () {
@@ -80,8 +120,8 @@
                     $("#dtre").val(data.dataDeRetirada);
                     $("#dten").val(data.dataDeEntrega);
                     $("#st").val(data.status);
-                    $("#lvr").val(data.livroId);
-                    $("#cli").val(data.clienteId);
+                    $("#livroId").val(data.livroId);
+                    $("#clienteId").val(data.clienteId);
                 };
                 options.error = function () {
                     $("#msg").html("Erro ao chamar a API!");
@@ -98,8 +138,8 @@
                 obj.dataDeRetirada = $("#dtre").val();
                 obj.dataDeEntrega = $("#dten").val();
                 obj.status = $("#st").val();
-                obj.livroId = $("#lvr").val();
-                obj.clienteId = $("#cli").val();
+                obj.livroId = $("#livroId").val();
+                obj.clienteId = $("#clienteId").val();
 
                 options.data = JSON.stringify(obj);
                 options.contentType = "application/json";
@@ -125,8 +165,8 @@
                 obj.dataDeRetirada = $("#dtre").val();
                 obj.dataDeEntrega = $("#dten").val();
                 obj.status = $("#st").val();
-                obj.livroId = $("#lvr").val();
-                obj.clienteId = $("#cli").val();
+                obj.livroId = $("#livroId").val();
+                obj.clienteId = $("#clienteId").val();
 
                 options.data = JSON.stringify(obj);
                 options.contentType = "application/json";

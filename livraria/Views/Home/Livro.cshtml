@@ -16,7 +16,9 @@
             <tr>
                 <td>Livro ID :</td>
                 <td>
-                    <select id="id"></select>
+                    <select id="id">
+                        <option></option>
+                    </select>
                 </td>
             </tr>
             <tr>
@@ -55,8 +57,8 @@
             options.dataType = "json";
             options.success = function (data) {
                 data.forEach(function (element) {
-                    $("#id").append("<option>"
-                        + element.codigo + "</option>");
+                    $("#id").append("<option value="+ element.codigo +">"
+                        + element.nome + "</option>");
                 });
             };
             options.error = function () {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using livraria.Models;
 using livraria.Repositorio;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace livraria.Controllers
 {
@@ -22,7 +23,7 @@ namespace livraria.Controllers
         [HttpGet]
         public IEnumerable<Aluguel> GetAll()
         {
-            var alugueis = _contexto.Alugueis.ToList();
+            var alugueis = _contexto.Alugueis.Include(x => x.Livro).ToList();
 
             return _contexto.Alugueis.ToList();
         }
@@ -30,7 +31,7 @@ namespace livraria.Controllers
         [HttpGet("{codigo}/aluguel")]
         public IActionResult BuscarPorId(Guid codigo)
         {
-            var aluguel = _contexto.Alugueis.FirstOrDefault(x => x.Codigo == codigo);
+            var aluguel = _contexto.Alugueis.Include(x => x.Livro).FirstOrDefault(x => x.Codigo == codigo);
 
             if (aluguel == null)
             {
